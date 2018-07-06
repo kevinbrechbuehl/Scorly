@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Scorly",
+  "name": "Simple and easy to use live scoring app for Squash matches.",
   "icons": [
     {
       "src": "favicon.ico",
