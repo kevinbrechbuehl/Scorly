@@ -31,7 +31,7 @@ namespace Scorly.Infrastructure.Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return this.Ok(_matches);
+            return this.Ok(_matches.OrderBy(e => e.StartTime));
         }
 
         [HttpGet("{id}")]
