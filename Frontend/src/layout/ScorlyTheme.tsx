@@ -1,12 +1,11 @@
 import * as React from 'react';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 const theme = createMuiTheme();
 
-class Theme extends React.Component<{ children: any }> {
+class ScorlyTheme extends React.Component {
   public render() {
     return (
       <MuiThemeProvider theme={theme}>
@@ -17,4 +16,4 @@ class Theme extends React.Component<{ children: any }> {
   }
 }
 
-export default Theme;
+export default ScorlyTheme;
