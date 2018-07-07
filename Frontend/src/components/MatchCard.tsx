@@ -22,36 +22,34 @@ const styles = {
 class MatchCard extends React.Component<WithStyles<typeof styles>> {
   public render() {
     return (
-      <React.Fragment>
-        <Card>
-          <CardContent>
-            <Typography color="textSecondary">
-              {new Date().toLocaleString()}
-            </Typography>
-            <Typography
-              variant="headline"
-              component="h2"
-              className={this.props.classes.title}
-            >
-              Sven McLaughlin
-              <Typography variant="caption">vs.</Typography>
-              Adrian Wintheiser
-            </Typography>
-            <Typography component="p">11-4</Typography>
-          </CardContent>
-          <CardActions>
-            <IconButton>
-              <VisibilityIcon />
-            </IconButton>
-            <IconButton>
-              <WhistleIcon />
-            </IconButton>
-            <IconButton className={this.props.classes.delete}>
-              <DeleteIcon />
-            </IconButton>
-          </CardActions>
-        </Card>
-      </React.Fragment>
+      <Card>
+        <CardContent>
+          <Typography color="textSecondary">
+            {new Date().toLocaleString()}
+          </Typography>
+          <Typography
+            variant="headline"
+            component="h2"
+            className={this.props.classes.title}
+          >
+            Sven McLaughlin
+            <Typography variant="caption">vs.</Typography>
+            Adrian Wintheiser
+          </Typography>
+          <Typography component="p">11-4</Typography>
+        </CardContent>
+        <CardActions>
+          <IconButton>
+            <VisibilityIcon />
+          </IconButton>
+          <IconButton>
+            <WhistleIcon />
+          </IconButton>
+          <IconButton className={this.props.classes.delete}>
+            <DeleteIcon />
+          </IconButton>
+        </CardActions>
+      </Card>
     );
   }
 }
