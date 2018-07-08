@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Scorly.Core.Dto
+namespace Scorly.Core.Entities
 {
-    public abstract class EntityBaseDto
+    public abstract class EntityBase
     {
         public Guid Id { get; set; }
     }
