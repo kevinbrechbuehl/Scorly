@@ -14,11 +14,13 @@
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
-    "test:ci": "react-scripts-ts test --env=jsdom --testResultsProcessor ./node_modules/jest-junit --coverage",
-    "eject": "react-scripts-ts eject"
+    "test:ci": "react-scripts-ts test --env=jsdom --testResultsProcessor=jest-junit --coverage",
+    "eject": "react-scripts-ts eject",
+    "generator": "nswag run /runtime:NetCore21"
   },
   "devDependencies": {
     "jest-junit": "^5.1.0",
+    "nswag": "^11.17.19",
     "@types/jest": "^23.1.4",
     "@types/node": "^10.5.2",
     "@types/react": "^16.4.6",

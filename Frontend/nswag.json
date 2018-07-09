@@ -1,0 +1,25 @@
+{
+  "swaggerGenerator": {
+    "webApiToSwagger": {
+      "isAspNetCore": true,
+      "assemblyPaths": [
+        "../Backend/src/Scorly.Infrastructure.Api/bin/Debug/netcoreapp2.1/Scorly.Infrastructure.Api.dll"
+      ],
+      "referencePaths": [
+        "../Backend/src/Scorly.Startup/bin/Debug/netcoreapp2.1/publish"
+      ],
+      "controllerNames": [
+        "Scorly.Infrastructure.Api.Controllers.MatchesController"
+      ]
+    }
+  },
+  "codeGenerators": {
+    "swaggerToTypeScriptClient": {
+      "useGetBaseUrlMethod": true,
+      "clientBaseClass": "ClientBase",
+      "extensionCode": "src/api/client.extensions.ts",
+      "output": "src/api/client.ts",
+      "typeScriptVersion": 2.9
+    }
+  }
+}

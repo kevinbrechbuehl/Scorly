@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -29,13 +30,15 @@ namespace Scorly.Infrastructure.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<MatchDto>))]
+        public IActionResult GetAll()
         {
             return this.Ok(_matches.OrderBy(e => e.StartTime));
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(MatchDto))]
+        public IActionResult GetById(Guid id)
         {
             var match = _matches.FirstOrDefault(e => e.Id == id);
             if (match == null)
@@ -47,7 +50,8 @@ namespace Scorly.Infrastructure.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]MatchDto dto)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(MatchDto))]
+        public IActionResult Create([FromBody]MatchDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Player1Name) || string.IsNullOrWhiteSpace(dto.Player2Name))
             {
@@ -58,10 +62,16 @@ namespace Scorly.Infrastructure.Api.Controllers
             return this.Ok(match);
         }
 
-        [HttpPut]
-        public IActionResult Put([FromBody]MatchDto dto)
+        [HttpPut("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(MatchDto))]
+        public IActionResult Update(Guid id, [FromBody]MatchDto dto)
         {
-            var match = _matches.SingleOrDefault(e => e.Id == dto.Id);
+            if (id != dto.Id) 
+            {
+                return this.BadRequest();
+            }
+            
+            var match = _matches.SingleOrDefault(e => e.Id == id);
             if (match == null)
             {
                 return this.NotFound();
@@ -76,6 +86,7 @@ namespace Scorly.Infrastructure.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public IActionResult Delete(Guid id)
         {
             var match = _matches.FirstOrDefault(e => e.Id == id);
@@ -86,7 +97,7 @@ namespace Scorly.Infrastructure.Api.Controllers
 
             _matches.Remove(match);
 
-            return this.Ok();
+            return this.NoContent();
         }
 
         private static MatchDto AddMatch(string player1Name, string player2Name, DateTime startTime)
