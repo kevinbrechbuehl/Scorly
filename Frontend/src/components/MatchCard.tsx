@@ -14,36 +14,42 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import WhistleIcon from 'mdi-material-ui/Whistle';
 
+import { MatchDto } from '../api/client';
+
 const styles = {
   delete: {
     marginLeft: 'auto'
   }
 };
 
-class MatchCard extends React.Component<WithStyles<typeof styles>> {
+interface IProps extends WithStyles<typeof styles> {
+  data: MatchDto;
+}
+
+class MatchCard extends React.Component<IProps> {
   public render() {
     return (
       <Card>
         <CardContent>
           <Typography variant="caption">
-            {new Date().toLocaleString()}
+            {this.props.data.startTime.toLocaleString()}
           </Typography>
           <Table>
             <TableBody>
               <TableRow key="player1">
                 <TableCell component="th" scope="row" padding="none">
-                  Sven McLaughlin
+                  {this.props.data.player1Name}
                 </TableCell>
                 <TableCell numeric={true} padding="none">
-                  11
+                  {this.props.data.player1Score}
                 </TableCell>
               </TableRow>
               <TableRow key="player2">
                 <TableCell component="th" scope="row" padding="none">
-                  Adrian Wintheiser
+                  {this.props.data.player2Name}
                 </TableCell>
                 <TableCell numeric={true} padding="none">
-                  3
+                  {this.props.data.player2Score}
                 </TableCell>
               </TableRow>
             </TableBody>

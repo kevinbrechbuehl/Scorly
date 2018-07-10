@@ -23,7 +23,7 @@ export class MatchesClient extends ClientBase {
         this.baseUrl = baseUrl ? baseUrl : this.getBaseUrl("");
     }
 
-    getAll(): Promise<MatchDto[] | null> {
+    getAll(): Promise<MatchDto[]> {
         let url_ = this.baseUrl + "/Matches";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -40,7 +40,7 @@ export class MatchesClient extends ClientBase {
         });
     }
 
-    protected processGetAll(response: Response): Promise<MatchDto[] | null> {
+    protected processGetAll(response: Response): Promise<MatchDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -59,10 +59,10 @@ export class MatchesClient extends ClientBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MatchDto[] | null>(<any>null);
+        return Promise.resolve<MatchDto[]>(<any>null);
     }
 
-    create(dto: MatchDto | null): Promise<MatchDto | null> {
+    create(dto: MatchDto): Promise<MatchDto> {
         let url_ = this.baseUrl + "/Matches";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -82,14 +82,14 @@ export class MatchesClient extends ClientBase {
         });
     }
 
-    protected processCreate(response: Response): Promise<MatchDto | null> {
+    protected processCreate(response: Response): Promise<MatchDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? MatchDto.fromJS(resultData200) : <any>null;
+            result200 = resultData200 ? MatchDto.fromJS(resultData200) : new MatchDto();
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -97,10 +97,10 @@ export class MatchesClient extends ClientBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MatchDto | null>(<any>null);
+        return Promise.resolve<MatchDto>(<any>null);
     }
 
-    getById(id: string): Promise<MatchDto | null> {
+    getById(id: string): Promise<MatchDto> {
         let url_ = this.baseUrl + "/Matches/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -120,14 +120,14 @@ export class MatchesClient extends ClientBase {
         });
     }
 
-    protected processGetById(response: Response): Promise<MatchDto | null> {
+    protected processGetById(response: Response): Promise<MatchDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? MatchDto.fromJS(resultData200) : <any>null;
+            result200 = resultData200 ? MatchDto.fromJS(resultData200) : new MatchDto();
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -135,10 +135,10 @@ export class MatchesClient extends ClientBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MatchDto | null>(<any>null);
+        return Promise.resolve<MatchDto>(<any>null);
     }
 
-    update(id: string, dto: MatchDto | null): Promise<MatchDto | null> {
+    update(id: string, dto: MatchDto): Promise<MatchDto> {
         let url_ = this.baseUrl + "/Matches/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -161,14 +161,14 @@ export class MatchesClient extends ClientBase {
         });
     }
 
-    protected processUpdate(response: Response): Promise<MatchDto | null> {
+    protected processUpdate(response: Response): Promise<MatchDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? MatchDto.fromJS(resultData200) : <any>null;
+            result200 = resultData200 ? MatchDto.fromJS(resultData200) : new MatchDto();
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -176,7 +176,7 @@ export class MatchesClient extends ClientBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MatchDto | null>(<any>null);
+        return Promise.resolve<MatchDto>(<any>null);
     }
 
     delete(id: string): Promise<void> {
@@ -228,7 +228,7 @@ export abstract class EntityBaseDto implements IEntityBaseDto {
 
     init(data?: any) {
         if (data) {
-            this.id = data["Id"];
+            this.id = data["id"];
         }
     }
 
@@ -239,7 +239,7 @@ export abstract class EntityBaseDto implements IEntityBaseDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["Id"] = this.id;
+        data["id"] = this.id;
         return data; 
     }
 }
@@ -249,9 +249,9 @@ export interface IEntityBaseDto {
 }
 
 export class MatchDto extends EntityBaseDto implements IMatchDto {
-    player1Name?: string | undefined;
+    player1Name!: string;
     player1Score!: number;
-    player2Name?: string | undefined;
+    player2Name!: string;
     player2Score!: number;
     startTime!: Date;
 
@@ -262,11 +262,11 @@ export class MatchDto extends EntityBaseDto implements IMatchDto {
     init(data?: any) {
         super.init(data);
         if (data) {
-            this.player1Name = data["Player1Name"];
-            this.player1Score = data["Player1Score"];
-            this.player2Name = data["Player2Name"];
-            this.player2Score = data["Player2Score"];
-            this.startTime = data["StartTime"] ? new Date(data["StartTime"].toString()) : <any>undefined;
+            this.player1Name = data["player1Name"];
+            this.player1Score = data["player1Score"];
+            this.player2Name = data["player2Name"];
+            this.player2Score = data["player2Score"];
+            this.startTime = data["startTime"] ? new Date(data["startTime"].toString()) : <any>undefined;
         }
     }
 
@@ -279,20 +279,20 @@ export class MatchDto extends EntityBaseDto implements IMatchDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["Player1Name"] = this.player1Name;
-        data["Player1Score"] = this.player1Score;
-        data["Player2Name"] = this.player2Name;
-        data["Player2Score"] = this.player2Score;
-        data["StartTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["player1Name"] = this.player1Name;
+        data["player1Score"] = this.player1Score;
+        data["player2Name"] = this.player2Name;
+        data["player2Score"] = this.player2Score;
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
         super.toJSON(data);
         return data; 
     }
 }
 
 export interface IMatchDto extends IEntityBaseDto {
-    player1Name?: string | undefined;
+    player1Name: string;
     player1Score: number;
-    player2Name?: string | undefined;
+    player2Name: string;
     player2Score: number;
     startTime: Date;
 }

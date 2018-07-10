@@ -2,6 +2,8 @@
   "swaggerGenerator": {
     "webApiToSwagger": {
       "isAspNetCore": true,
+      "defaultReferenceTypeNullHandling": "notNull",
+      "defaultPropertyNameHandling": "camelCase",
       "assemblyPaths": [
         "../Backend/src/Scorly.Infrastructure.Api/bin/Debug/netcoreapp2.1/Scorly.Infrastructure.Api.dll"
       ],
