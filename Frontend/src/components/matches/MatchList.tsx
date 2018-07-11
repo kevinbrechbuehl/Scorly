@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import { MatchDto, MatchesClient } from '../../api/client';
+import Loading from '../Loading';
 import MatchCard from './MatchCard';
 
 interface IState {
@@ -31,7 +32,7 @@ class MatchList extends React.Component<{}, IState> {
 
   public render() {
     if (this.state.loading) {
-      return <Typography>Loading data ...</Typography>;
+      return <Loading />;
     } else if (this.state.error) {
       return (
         <Typography>
