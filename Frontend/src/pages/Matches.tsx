@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import Typography from '@material-ui/core/Typography';
 
-import MatchList from '../components/MatchList';
+import AddMatch from '../components/matches/AddMatch';
+import MatchList from '../components/matches/MatchList';
 
 class Matches extends React.Component {
   public render() {
@@ -12,6 +13,7 @@ class Matches extends React.Component {
           Matches
         </Typography>
         <MatchList />
+        <AddMatch />
       </React.Fragment>
     );
   }

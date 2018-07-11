@@ -14,7 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import WhistleIcon from 'mdi-material-ui/Whistle';
 
-import { MatchDto } from '../api/client';
+import { MatchDto } from '../../api/client';
 
 const styles = {
   delete: {
