@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
 import { MatchDto, MatchesClient } from '../../api/client';
+import Error from '../Error';
 import Loading from '../Loading';
 import MatchCard from './MatchCard';
 
@@ -33,14 +34,13 @@ class MatchList extends React.Component<{}, IState> {
   public render() {
     if (this.state.loading) {
       return <Loading />;
-    } else if (this.state.error) {
-      return (
-        <Typography>
-          There was an error loading matches. Please try again later.
-        </Typography>
-      );
     } else if (!this.state.data || !this.state.data.length) {
-      return <Typography>No matches available.</Typography>;
+      return (
+        <React.Fragment>
+          <Typography>No matches available.</Typography>
+          {this.state.error && <Error message="Error while loading matches." />}
+        </React.Fragment>
+      );
     } else {
       return (
         <Grid container={true} spacing={16}>
