@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -56,12 +57,16 @@ class MatchCard extends React.Component<IProps> {
           </Table>
         </CardContent>
         <CardActions>
-          <IconButton>
-            <VisibilityIcon />
-          </IconButton>
-          <IconButton>
-            <WhistleIcon />
-          </IconButton>
+          <Link to={'/matches/' + this.props.data.id}>
+            <IconButton>
+              <VisibilityIcon />
+            </IconButton>
+          </Link>
+          <Link to={'/matches/' + this.props.data.id + '/referee'}>
+            <IconButton>
+              <WhistleIcon />
+            </IconButton>
+          </Link>
           <IconButton className={this.props.classes.delete}>
             <DeleteIcon />
           </IconButton>
