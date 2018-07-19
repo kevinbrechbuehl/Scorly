@@ -1,0 +1,8 @@
+# Autosave files
+*~
+
+# build
+.fake
+
+# globs
+*.DS_Store
