@@ -1,10 +1,12 @@
 #r "paket:
 nuget Fake.IO.FileSystem
+nuget Fake.IO.Zip
 nuget Fake.JavaScript.Npm
 nuget Fake.Core.Target //"
 
 open Fake.Core
 open Fake.IO
+open Fake.IO.Globbing.Operators
 open Fake.JavaScript
 
 // Properties
@@ -39,14 +41,14 @@ Target.create "Test" (fun _ ->
 )
 
 Target.create "Pack" (fun _ ->
-  
-  Trace.log "Pack: TODO"
+  Shell.mkdir outputDir
   
   // Pack Backend
   // TODO
   
   // Pack Frontend
-  // TODO
+  !! (frontendTempDir + "/**/*.*")
+    |> Zip.zip frontendTempDir (outputDir + "/Scorly.Frontend.zip")
 )
 
 Target.create "Build-Test-Pack" ignore
