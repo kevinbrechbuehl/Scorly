@@ -1,9 +1,12 @@
 #r "paket:
+nuget Fake.BuildServer.AppVeyor
 nuget Fake.IO.FileSystem
 nuget Fake.IO.Zip
 nuget Fake.JavaScript.Npm
+nuget Fake.Core.Environment
 nuget Fake.Core.Target //"
 
+open Fake.BuildServer
 open Fake.Core
 open Fake.IO
 open Fake.IO.Globbing.Operators
@@ -14,7 +17,6 @@ let outputDir = __SOURCE_DIRECTORY__ + "/Output"
 let tempDir = __SOURCE_DIRECTORY__ + "/Temp"
 
 let frontendDir = __SOURCE_DIRECTORY__ + "/../Frontend"
-let frontendBuildDir = frontendDir + "/build"
 let frontendTempDir = tempDir + "/Frontend"
 
 // Targets
@@ -29,15 +31,7 @@ Target.create "Build" (fun _ ->
   // Build Frontend
   Npm.install (fun o -> { o with WorkingDirectory = frontendDir })
   Npm.run "build" (fun o -> { o with WorkingDirectory = frontendDir })
-  Shell.copyDir frontendTempDir frontendBuildDir (fun _ -> true)
-)
-
-Target.create "Test" (fun _ ->
-  // Test Backend
-  // TODO
-
-  // Test Frontend
-  Npm.run "test" (fun o -> { o with WorkingDirectory = frontendDir })
+  Shell.copyDir frontendTempDir (frontendDir + "/build") (fun _ -> true)
 )
 
 Target.create "Pack" (fun _ ->
@@ -51,15 +45,25 @@ Target.create "Pack" (fun _ ->
     |> Zip.zip frontendTempDir (outputDir + "/Scorly.Frontend.zip")
 )
 
-Target.create "Build-Test-Pack" ignore
+Target.create "Test" (fun _ ->
+  // Test Backend
+  // TODO
+
+  // Test Frontend
+  Npm.run "test:ci" (fun o -> { o with WorkingDirectory = frontendDir })
+  if BuildServer.buildServer = BuildServer.AppVeyor then
+    AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Junit, frontendDir + "/junit.xml"))
+)
+
+Target.create "Build-Pack-Test" ignore
 
 // Dependencies
 open Fake.Core.TargetOperators
 
 "Clean"
   ==> "Build"
-  ==> "Test"
   ==> "Pack"
-  ==> "Build-Test-Pack"
+  ==> "Test"
+  ==> "Build-Pack-Test"
 
-Target.runOrDefault "Build-Test-Pack"
+Target.runOrDefault "Build-Pack-Test"
