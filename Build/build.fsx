@@ -4,15 +4,13 @@ nuget Fake.Core.Target
 nuget Fake.BuildServer.AppVeyor
 nuget Fake.IO.FileSystem
 nuget Fake.IO.Zip
-nuget Fake.JavaScript.Npm
-nuget Fake.Testing.Common //"
+nuget Fake.JavaScript.Npm //"
 
 open Fake.BuildServer
 open Fake.Core
 open Fake.IO
 open Fake.IO.Globbing.Operators
 open Fake.JavaScript
-open Fake.Testing
 
 // Properties
 let outputDir = __SOURCE_DIRECTORY__ + "/Output"
@@ -43,11 +41,9 @@ Target.create "Test" (fun _ ->
   // Test Frontend
   try
     Npm.test (fun o -> { o with WorkingDirectory = frontendDir })
-  with
-    | :? Common.FailedTestsException -> ()
-
-  if BuildServer.buildServer = BuildServer.AppVeyor then
-    AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Junit, frontendDir + "/junit.xml"))
+  finally
+    if BuildServer.buildServer = BuildServer.AppVeyor then
+      AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Junit, frontendDir + "/junit.xml"))
 )
 
 Target.create "Pack" (fun _ ->
