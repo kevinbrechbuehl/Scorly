@@ -1,5 +1,5 @@
 describe('Scorly', () => {
   it('can run tests', () => {
-    expect(true).toBe(true);
+    expect(true).toBe(false);
   });
 });

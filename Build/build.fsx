@@ -39,7 +39,7 @@ Target.create "Test" (fun _ ->
   // TODO
 
   // Test Frontend
-  Npm.run "test:ci" (fun o -> { o with WorkingDirectory = frontendDir })
+  Npm.test (fun o -> { o with WorkingDirectory = frontendDir })
   if BuildServer.buildServer = BuildServer.AppVeyor then
     AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Junit, frontendDir + "/junit.xml"))
 )
