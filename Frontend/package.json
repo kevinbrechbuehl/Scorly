@@ -15,7 +15,7 @@
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
-    "test:ci": "react-scripts-ts test --env=jsdom --watchAll=false",
+    "test:ci": "react-scripts-ts test --env=jsdom --watchAll=false --testResultsProcessor=jest-junit",
     "eject": "react-scripts-ts eject",
     "generator": "nswag run /runtime:NetCore21"
   },
