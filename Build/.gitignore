@@ -1,8 +1,8 @@
-# Autosave files
+# Global
 *~
+*.DS_Store
 
 # build
 .fake
-
-# globs
-*.DS_Store
+temp
+output
