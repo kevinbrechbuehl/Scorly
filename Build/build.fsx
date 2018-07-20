@@ -34,6 +34,16 @@ Target.create "Build" (fun _ ->
   Shell.copyDir frontendTempDir (frontendDir + "/build") (fun _ -> true)
 )
 
+Target.create "Test" (fun _ ->
+  // Test Backend
+  // TODO
+
+  // Test Frontend
+  Npm.run "test:ci" (fun o -> { o with WorkingDirectory = frontendDir })
+  if BuildServer.buildServer = BuildServer.AppVeyor then
+    AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Junit, frontendDir + "/junit.xml"))
+)
+
 Target.create "Pack" (fun _ ->
   Shell.mkdir outputDir
   
@@ -45,25 +55,15 @@ Target.create "Pack" (fun _ ->
     |> Zip.zip frontendTempDir (outputDir + "/Scorly.Frontend.zip")
 )
 
-Target.create "Test" (fun _ ->
-  // Test Backend
-  // TODO
-
-  // Test Frontend
-  Npm.run "test:ci" (fun o -> { o with WorkingDirectory = frontendDir })
-  if BuildServer.buildServer = BuildServer.AppVeyor then
-    AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Junit, frontendDir + "/junit.xml"))
-)
-
-Target.create "Build-Pack-Test" ignore
+Target.create "Build-Test-Pack" ignore
 
 // Dependencies
 open Fake.Core.TargetOperators
 
 "Clean"
   ==> "Build"
-  ==> "Pack"
   ==> "Test"
-  ==> "Build-Pack-Test"
+  ==> "Pack"
+  ==> "Build-Test-Pack"
 
-Target.runOrDefault "Build-Pack-Test"
+Target.runOrDefault "Build-Test-Pack"
