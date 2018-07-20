@@ -2,7 +2,6 @@
 nuget Fake.IO.FileSystem
 nuget Fake.JavaScript.Npm
 nuget Fake.Core.Target //"
-#load "./.fake/build.fsx/intellisense.fsx"
 
 open Fake.Core
 open Fake.IO
@@ -22,33 +21,43 @@ Target.create "Clean" (fun _ ->
 )
 
 Target.create "Build" (fun _ ->
+  // Build Backend
+  // TODO
 
-  // Build React Frontend
+  // Build Frontend
   Npm.install (fun o -> { o with WorkingDirectory = frontendDir })
   Npm.run "build" (fun o -> { o with WorkingDirectory = frontendDir })
   Shell.copyDir frontendTempDir frontendBuildDir (fun _ -> true)
 )
 
 Target.create "Test" (fun _ ->
+  // Test Backend
+  // TODO
 
-  // Test React Frontend
-  Npm.run "test:ci" (fun o -> { o with WorkingDirectory = frontendDir })
+  // Test Frontend
+  Npm.run "test" (fun o -> { o with WorkingDirectory = frontendDir })
 )
 
-Target.create "Deploy" (fun _ ->
-  Shell.mkdir outputDir
-
-  // Pack React Frontend
-  // TODO: Create zip file of frontendTempDir and save into output folder
+Target.create "Pack" (fun _ ->
+  
+  Trace.log "Pack: TODO"
+  
+  // Pack Backend
+  // TODO
+  
+  // Pack Frontend
+  // TODO
 )
 
-open Fake.Core.TargetOperators
+Target.create "Build-Test-Pack" ignore
 
 // Dependencies
+open Fake.Core.TargetOperators
+
 "Clean"
   ==> "Build"
   ==> "Test"
-  ==> "Deploy"
+  ==> "Pack"
+  ==> "Build-Test-Pack"
 
-// Start Build
-Target.runOrDefault "Deploy"
+Target.runOrDefault "Build-Test-Pack"
