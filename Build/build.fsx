@@ -2,12 +2,15 @@
 nuget Fake.Core.Environment
 nuget Fake.Core.Target
 nuget Fake.BuildServer.AppVeyor
+nuget Fake.DotNet.Cli
 nuget Fake.IO.FileSystem
 nuget Fake.IO.Zip
 nuget Fake.JavaScript.Npm //"
+#load "./.fake/build.fsx/intellisense.fsx"
 
 open Fake.BuildServer
 open Fake.Core
+open Fake.DotNet
 open Fake.IO
 open Fake.IO.Globbing.Operators
 open Fake.JavaScript
@@ -15,6 +18,9 @@ open Fake.JavaScript
 // Properties
 let outputDir = __SOURCE_DIRECTORY__ + "/Output"
 let tempDir = __SOURCE_DIRECTORY__ + "/Temp"
+
+let backendDir = __SOURCE_DIRECTORY__ + "/../Backend"
+let backendTempDir = tempDir + "/Backend"
 
 let frontendDir = __SOURCE_DIRECTORY__ + "/../Frontend"
 let frontendTempDir = tempDir + "/Frontend"
@@ -26,7 +32,8 @@ Target.create "Clean" (fun _ ->
 
 Target.create "Build" (fun _ ->
   // Build Backend
-  // TODO
+  // TODO: Build all projects, publish startup project and copy output to temp dir
+  DotNet.build id (backendDir + "/src/Scorly.StartUp/Scorly.StartUp.csproj")
 
   // Build Frontend
   Npm.install (fun o -> { o with WorkingDirectory = frontendDir })
