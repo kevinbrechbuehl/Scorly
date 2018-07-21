@@ -20,25 +20,28 @@ let outputDir = __SOURCE_DIRECTORY__ + "/Output"
 let tempDir = __SOURCE_DIRECTORY__ + "/Temp"
 
 let backendDir = __SOURCE_DIRECTORY__ + "/../Backend"
+let backendBuildDir = backendDir + "/src/Scorly.Startup/bin/Release/netcoreapp2.1/publish"
 let backendTempDir = tempDir + "/Backend"
 
 let frontendDir = __SOURCE_DIRECTORY__ + "/../Frontend"
+let frontendBuildDir = frontendDir + "/build"
 let frontendTempDir = tempDir + "/Frontend"
 
 // Targets
 Target.create "Clean" (fun _ ->
-  Shell.deleteDirs [ outputDir; tempDir ]
+  Shell.deleteDirs [ backendBuildDir; frontendBuildDir; outputDir; tempDir ]
 )
 
 Target.create "Build" (fun _ ->
   // Build Backend
-  // TODO: Build all projects, publish startup project and copy output to temp dir
-  DotNet.build id (backendDir + "/src/Scorly.StartUp/Scorly.StartUp.csproj")
+  DotNet.build id (backendDir + "/Scorly.sln")
+  DotNet.publish id (backendDir + "/src/Scorly.StartUp/Scorly.StartUp.csproj")
+  Shell.copyDir backendTempDir backendBuildDir (fun _ -> true)
 
   // Build Frontend
   Npm.install (fun o -> { o with WorkingDirectory = frontendDir })
   Npm.run "build" (fun o -> { o with WorkingDirectory = frontendDir })
-  Shell.copyDir frontendTempDir (frontendDir + "/build") (fun _ -> true)
+  Shell.copyDir frontendTempDir frontendBuildDir (fun _ -> true)
 )
 
 Target.create "Test" (fun _ ->
@@ -57,7 +60,8 @@ Target.create "Pack" (fun _ ->
   Shell.mkdir outputDir
   
   // Pack Backend
-  // TODO
+  !! (backendTempDir + "/**/*.*")
+    |> Zip.zip backendTempDir (outputDir + "/Scorly.Backend.zip")
   
   // Pack Frontend
   !! (frontendTempDir + "/**/*.*")
