@@ -46,8 +46,6 @@ Target.create "Build" (fun _ ->
 )
 
 Target.create "Test" (fun _ ->
-  // TODO: Find a way for better test results output in AppVeyor
-
   // Test Backend
   try
     // TODO: FInd a way to test all projects under /test/**
