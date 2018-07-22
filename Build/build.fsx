@@ -22,6 +22,7 @@ let tempDir = __SOURCE_DIRECTORY__ + "/Temp"
 let backendDir = __SOURCE_DIRECTORY__ + "/../Backend"
 let backendBuildDir = backendDir + "/src/Scorly.Startup/bin/Release/netcoreapp2.1/publish"
 let backendTempDir = tempDir + "/Backend"
+let backendTestResultsFile = tempDir + "/test_results.trx"
 
 let frontendDir = __SOURCE_DIRECTORY__ + "/../Frontend"
 let frontendBuildDir = frontendDir + "/build"
@@ -46,7 +47,12 @@ Target.create "Build" (fun _ ->
 
 Target.create "Test" (fun _ ->
   // Test Backend
-  // TODO
+  try
+    // TODO: FInd a way to test all projects under /test/**
+    DotNet.test (fun o -> { o with Logger = Some ("trx;LogFileName=" + backendTestResultsFile) }) (backendDir + "/test/Scorly.Core.Tests/Scorly.Core.Tests.csproj")
+  finally
+    if BuildServer.buildServer = BuildServer.AppVeyor then
+      AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Mstest, backendTestResultsFile))
 
   // Test Frontend
   try
