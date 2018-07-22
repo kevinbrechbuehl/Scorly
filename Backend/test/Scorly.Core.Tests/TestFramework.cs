@@ -8,7 +8,7 @@ namespace Scorly.Core.Tests
         [Test]
         public void IsTrue()
         {
-            Assert.That(true, Is.True);
+            Assert.That(false, Is.True);
         }
 
         [Test]

@@ -54,12 +54,12 @@ Target.create "Test" (fun _ ->
     if BuildServer.buildServer = BuildServer.AppVeyor then
       AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Mstest, backendTestResultsFile))
 
-  // Test Frontend
-  try
-    Npm.test (fun o -> { o with WorkingDirectory = frontendDir })
-  finally
-    if BuildServer.buildServer = BuildServer.AppVeyor then
-      AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Junit, frontendDir + "/junit.xml"))
+    // Test Frontend
+    try
+      Npm.test (fun o -> { o with WorkingDirectory = frontendDir })
+    finally
+      if BuildServer.buildServer = BuildServer.AppVeyor then
+        AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Junit, frontendDir + "/junit.xml"))
 )
 
 Target.create "Pack" (fun _ ->
