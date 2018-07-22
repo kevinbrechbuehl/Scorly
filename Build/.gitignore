@@ -1,0 +1,8 @@
+# Global
+*~
+*.DS_Store
+
+# build
+.fake
+temp
+output
