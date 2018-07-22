@@ -27,6 +27,7 @@ let backendTestResultsFile = tempDir + "/test_results.trx"
 let frontendDir = __SOURCE_DIRECTORY__ + "/../Frontend"
 let frontendBuildDir = frontendDir + "/build"
 let frontendTempDir = tempDir + "/Frontend"
+let frontendTestResultsFile = frontendDir + "/junit.xml"
 
 // Targets
 Target.create "Clean" (fun _ ->
@@ -59,7 +60,7 @@ Target.create "Test" (fun _ ->
       Npm.test (fun o -> { o with WorkingDirectory = frontendDir })
     finally
       if BuildServer.buildServer = BuildServer.AppVeyor then
-        AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Junit, frontendDir + "/junit.xml"))
+        AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Junit, frontendTestResultsFile))
 )
 
 Target.create "Pack" (fun _ ->
