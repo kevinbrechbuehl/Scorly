@@ -63,7 +63,7 @@ class MatchList extends React.Component<WithStyles<typeof styles>, IState> {
           >
             {this.state.data.map((match, index) => (
               <Grid key={index} item={true} xs={12} sm={6} md={4} lg={3}>
-                <MatchCard data={match} />
+                <MatchCard data={match} onDeletedHandler={this.reloadData} />
               </Grid>
             ))}
           </Grid>

@@ -116,7 +116,7 @@ class AddMatch extends React.Component<IProps, IState> {
           </DialogContent>
           <DialogActions>
             {this.state.loading && <Loading />}
-            <Button onClick={this.closeDialog} color="primary">
+            <Button onClick={this.closeDialog} color="default">
               Cancel
             </Button>
             <Button onClick={this.addMatch} color="primary">
