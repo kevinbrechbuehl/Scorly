@@ -1,6 +1,8 @@
 import * as React from 'react';
 
+import { Theme } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import { MatchDto, MatchesClient } from '../../api/client';
@@ -9,13 +11,19 @@ import Loading from '../Loading';
 import AddMatch from './AddMatch';
 import MatchCard from './MatchCard';
 
+const styles = (theme: Theme) => ({
+  grid: {
+    marginBottom: theme.spacing.unit * 10
+  }
+});
+
 interface IState {
   data: MatchDto[];
   error: boolean;
   loading: boolean;
 }
 
-class MatchList extends React.Component<{}, IState> {
+class MatchList extends React.Component<WithStyles<typeof styles>, IState> {
   private client = new MatchesClient();
 
   constructor(props: any) {
@@ -48,7 +56,11 @@ class MatchList extends React.Component<{}, IState> {
     } else {
       return (
         <React.Fragment>
-          <Grid container={true} spacing={16}>
+          <Grid
+            container={true}
+            spacing={16}
+            className={this.props.classes.grid}
+          >
             {this.state.data.map((match, index) => (
               <Grid key={index} item={true} xs={12} sm={6} md={4} lg={3}>
                 <MatchCard data={match} />
@@ -75,4 +87,4 @@ class MatchList extends React.Component<{}, IState> {
   }
 }
 
-export default MatchList;
+export default withStyles(styles)(MatchList);
