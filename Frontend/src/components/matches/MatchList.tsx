@@ -1,12 +1,21 @@
 import * as React from 'react';
 
+import { Theme } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
+import { withStyles, WithStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import { MatchDto, MatchesClient } from '../../api/client';
 import Error from '../Error';
 import Loading from '../Loading';
+import AddMatch from './AddMatch';
 import MatchCard from './MatchCard';
+
+const styles = (theme: Theme) => ({
+  grid: {
+    marginBottom: theme.spacing.unit * 10
+  }
+});
 
 interface IState {
   data: MatchDto[];
@@ -14,11 +23,13 @@ interface IState {
   loading: boolean;
 }
 
-class MatchList extends React.Component<{}, IState> {
+class MatchList extends React.Component<WithStyles<typeof styles>, IState> {
   private client = new MatchesClient();
 
   constructor(props: any) {
     super(props);
+
+    this.reloadData = this.reloadData.bind(this);
 
     this.state = {
       data: [],
@@ -38,18 +49,26 @@ class MatchList extends React.Component<{}, IState> {
       return (
         <React.Fragment>
           <Typography>No matches available.</Typography>
+          <AddMatch onAddedHandler={this.reloadData} />
           {this.state.error && <Error message="Error while loading matches." />}
         </React.Fragment>
       );
     } else {
       return (
-        <Grid container={true} spacing={16}>
-          {this.state.data.map((match, index) => (
-            <Grid key={index} item={true} xs={12} sm={6} md={4} lg={3}>
-              <MatchCard data={match} />
-            </Grid>
-          ))}
-        </Grid>
+        <React.Fragment>
+          <Grid
+            container={true}
+            spacing={16}
+            className={this.props.classes.grid}
+          >
+            {this.state.data.map((match, index) => (
+              <Grid key={index} item={true} xs={12} sm={6} md={4} lg={3}>
+                <MatchCard data={match} onDeletedHandler={this.reloadData} />
+              </Grid>
+            ))}
+          </Grid>
+          <AddMatch onAddedHandler={this.reloadData} />
+        </React.Fragment>
       );
     }
   }
@@ -68,4 +87,4 @@ class MatchList extends React.Component<{}, IState> {
   }
 }
 
-export default MatchList;
+export default withStyles(styles)(MatchList);
