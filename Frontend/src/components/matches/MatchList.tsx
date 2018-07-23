@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import { MatchDto, MatchesClient } from '../../api/client';
 import Error from '../Error';
 import Loading from '../Loading';
+import AddMatch from './AddMatch';
 import MatchCard from './MatchCard';
 
 interface IState {
@@ -19,6 +20,8 @@ class MatchList extends React.Component<{}, IState> {
 
   constructor(props: any) {
     super(props);
+
+    this.reloadData = this.reloadData.bind(this);
 
     this.state = {
       data: [],
@@ -38,18 +41,22 @@ class MatchList extends React.Component<{}, IState> {
       return (
         <React.Fragment>
           <Typography>No matches available.</Typography>
+          <AddMatch onAddedHandler={this.reloadData} />
           {this.state.error && <Error message="Error while loading matches." />}
         </React.Fragment>
       );
     } else {
       return (
-        <Grid container={true} spacing={16}>
-          {this.state.data.map((match, index) => (
-            <Grid key={index} item={true} xs={12} sm={6} md={4} lg={3}>
-              <MatchCard data={match} />
-            </Grid>
-          ))}
-        </Grid>
+        <React.Fragment>
+          <Grid container={true} spacing={16}>
+            {this.state.data.map((match, index) => (
+              <Grid key={index} item={true} xs={12} sm={6} md={4} lg={3}>
+                <MatchCard data={match} />
+              </Grid>
+            ))}
+          </Grid>
+          <AddMatch onAddedHandler={this.reloadData} />
+        </React.Fragment>
       );
     }
   }

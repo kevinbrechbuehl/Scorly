@@ -24,6 +24,10 @@ const styles = (theme: Theme) => ({
   }
 });
 
+interface IProps extends WithStyles<typeof styles> {
+  onAddedHandler: () => void;
+}
+
 interface IState {
   dialogOpen: boolean;
   error: boolean;
@@ -34,7 +38,7 @@ interface IState {
   startTime: string;
 }
 
-class AddMatch extends React.Component<WithStyles<typeof styles>, IState> {
+class AddMatch extends React.Component<IProps, IState> {
   private client = new MatchesClient();
 
   constructor(props: any) {
@@ -156,7 +160,13 @@ class AddMatch extends React.Component<WithStyles<typeof styles>, IState> {
             player1Name: '',
             player2Name: ''
           },
-          () => this.closeDialog()
+          () => {
+            this.closeDialog();
+
+            if (this.props.onAddedHandler != null) {
+              this.props.onAddedHandler();
+            }
+          }
         );
       })
       .catch(() => {
