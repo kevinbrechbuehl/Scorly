@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
+
 import Typography from '@material-ui/core/Typography';
 
 import { MatchDto, MatchesClient } from '../../api/client';
@@ -16,6 +18,7 @@ interface IProps extends RouteComponentProps<IRouterProps> {}
 interface IState {
   data?: MatchDto;
   error: boolean;
+  hubConnection?: HubConnection;
   loading: boolean;
 }
 
@@ -28,6 +31,7 @@ class MatchDetail extends React.Component<IProps, IState> {
     this.state = {
       data: undefined,
       error: false,
+      hubConnection: undefined,
       loading: false
     };
   }
@@ -40,9 +44,32 @@ class MatchDetail extends React.Component<IProps, IState> {
       .then(result => {
         this.setState({ data: result, loading: false });
       })
+      .then(() => {
+        const hubConnection = new HubConnectionBuilder()
+          .withUrl(process.env.REACT_APP_API_URL + '/scoreChange')
+          .configureLogging(LogLevel.Information)
+          .build();
+
+        this.setState({ hubConnection }, () => {
+          (this.state.hubConnection as HubConnection).start().then(() => {
+            hubConnection.on('updateScore', match => {
+              if (match.id === this.props.match.params.id) {
+                this.setState({
+                  data: match
+                });
+              }
+            });
+          });
+        });
+      })
       .catch(() => {
         this.setState({ error: true, loading: false });
       });
+  }
+
+  public componentWillUnmount() {
+    // TODO: Better handling of optional parameters
+    (this.state.hubConnection as HubConnection).stop();
   }
 
   public render() {
