@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
-import { HubConnection, HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 
 import Typography from '@material-ui/core/Typography';
 
@@ -13,25 +13,25 @@ interface IRouterProps {
   id: string;
 }
 
-interface IProps extends RouteComponentProps<IRouterProps> {}
-
 interface IState {
-  data?: MatchDto;
+  data: MatchDto | null;
   error: boolean;
-  hubConnection?: HubConnection;
   loading: boolean;
 }
 
-class MatchDetail extends React.Component<IProps, IState> {
+class MatchDetail extends React.Component<
+  RouteComponentProps<IRouterProps>,
+  IState
+> {
   private client = new MatchesClient();
+  private hubConnection: HubConnection | null;
 
   constructor(props: any) {
     super(props);
 
     this.state = {
-      data: undefined,
+      data: null,
       error: false,
-      hubConnection: undefined,
       loading: false
     };
   }
@@ -45,22 +45,15 @@ class MatchDetail extends React.Component<IProps, IState> {
         this.setState({ data: result, loading: false });
       })
       .then(() => {
-        const hubConnection = new HubConnectionBuilder()
+        this.hubConnection = new HubConnectionBuilder()
           .withUrl(process.env.REACT_APP_API_URL + '/scoreChange')
-          .configureLogging(LogLevel.Information)
           .build();
 
-        this.setState({ hubConnection }, () => {
-          (this.state.hubConnection as HubConnection).start().then(() => {
-            hubConnection.on('updateScore', match => {
-              if (match.id === this.props.match.params.id) {
-                this.setState({
-                  data: match
-                });
-              }
-            });
-          });
+        this.hubConnection.on('updateScore', match => {
+          this.updateScore(match);
         });
+
+        this.hubConnection.start();
       })
       .catch(() => {
         this.setState({ error: true, loading: false });
@@ -68,8 +61,9 @@ class MatchDetail extends React.Component<IProps, IState> {
   }
 
   public componentWillUnmount() {
-    // TODO: Better handling of optional parameters
-    (this.state.hubConnection as HubConnection).stop();
+    if (this.hubConnection != null) {
+      this.hubConnection.stop();
+    }
   }
 
   public render() {
@@ -88,6 +82,14 @@ class MatchDetail extends React.Component<IProps, IState> {
           {this.state.data.player2Score} {this.state.data.player2Name}
         </Typography>
       );
+    }
+  }
+
+  private updateScore(match: MatchDto) {
+    if (match.id === this.props.match.params.id) {
+      this.setState({
+        data: match
+      });
     }
   }
 }
