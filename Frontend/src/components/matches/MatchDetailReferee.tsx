@@ -15,30 +15,29 @@ interface IRouterProps {
   id: string;
 }
 
-interface IProps extends RouteComponentProps<IRouterProps> {}
-
 interface IState {
-  // TODO: Null Handling must be better, a needed casting on every get is not nice...
-  data?: MatchDto;
+  data: MatchDto | null;
   error: boolean;
   loading: boolean;
 }
 
-class MatchDetailReferee extends React.Component<IProps, IState> {
+class MatchDetailReferee extends React.Component<
+  RouteComponentProps<IRouterProps>,
+  IState
+> {
   private client = new MatchesClient();
 
   constructor(props: any) {
     super(props);
 
     this.state = {
-      data: undefined,
+      data: null,
       error: false,
       loading: false
     };
   }
 
   public componentDidMount() {
-    // TODO: Share code with match detail
     this.setState({ loading: true, error: false });
 
     this.client
@@ -57,7 +56,9 @@ class MatchDetailReferee extends React.Component<IProps, IState> {
     } else if (this.state.data == null) {
       return (
         <React.Fragment>
-          {this.state.error && <Error message="Error while loading match." />}
+          {this.state.error && (
+            <Error message="Error while loading or updating match." />
+          )}
         </React.Fragment>
       );
     } else {
@@ -65,19 +66,19 @@ class MatchDetailReferee extends React.Component<IProps, IState> {
         <React.Fragment>
           <Typography>
             {this.state.data.player1Name}: {this.state.data.player1Score}
-            <Button onClick={this.incrementPlayer1Score}>
+            <Button onClick={this.increment.bind(this, 'player1Score')}>
               <AddIcon />
             </Button>
-            <Button onClick={this.decrementPlayer1Score}>
+            <Button onClick={this.decrement.bind(this, 'player1Score')}>
               <RemoveIcon />
             </Button>
           </Typography>
           <Typography>
             {this.state.data.player2Name}: {this.state.data.player2Score}
-            <Button onClick={this.incrementPlayer2Score}>
+            <Button onClick={this.increment.bind(this, 'player2Score')}>
               <AddIcon />
             </Button>
-            <Button onClick={this.decrementPlayer2Score}>
+            <Button onClick={this.decrement.bind(this, 'player2Score')}>
               <RemoveIcon />
             </Button>
           </Typography>
@@ -86,68 +87,44 @@ class MatchDetailReferee extends React.Component<IProps, IState> {
     }
   }
 
-  // TODO: Use one method to increment and decrement
-  private incrementPlayer1Score = () => {
-    const match = this.state.data as MatchDto;
-    match.player1Score++;
+  private increment(property: string) {
+    if (this.state.data != null) {
+      this.state.data[property] = this.state.data[property] + 1;
 
-    this.setState(
-      {
-        ...this.state,
-        data: match
-      },
-      this.update
-    );
-  };
+      this.setState(
+        {
+          ...this.state,
+          data: this.state.data
+        },
+        this.update
+      );
+    }
+  }
 
-  private incrementPlayer2Score = () => {
-    const match = this.state.data as MatchDto;
-    match.player2Score++;
+  private decrement(property: string) {
+    if (this.state.data != null && this.state.data[property] > 0) {
+      this.state.data[property] = this.state.data[property] - 1;
 
-    this.setState(
-      {
-        ...this.state,
-        data: match
-      },
-      this.update
-    );
-  };
-
-  private decrementPlayer1Score = () => {
-    const match = this.state.data as MatchDto;
-    match.player1Score--;
-
-    this.setState(
-      {
-        ...this.state,
-        data: match
-      },
-      this.update
-    );
-  };
-
-  private decrementPlayer2Score = () => {
-    const match = this.state.data as MatchDto;
-    match.player2Score--;
-
-    this.setState(
-      {
-        ...this.state,
-        data: match
-      },
-      this.update
-    );
-  };
+      this.setState(
+        {
+          ...this.state,
+          data: this.state.data
+        },
+        this.update
+      );
+    }
+  }
 
   private update() {
     this.setState({ error: false });
 
-    // TODO: Error message should be different than while loading the match
-    this.client
-      .update(this.props.match.params.id, this.state.data as MatchDto)
-      .catch(() => {
-        this.setState({ error: true });
-      });
+    if (this.state.data != null) {
+      this.client
+        .update(this.props.match.params.id, this.state.data)
+        .catch(() => {
+          this.setState({ error: true });
+        });
+    }
   }
 }
 
