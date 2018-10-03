@@ -78,8 +78,8 @@ class MatchDetail extends React.Component<
     } else {
       return (
         <Typography>
-          {this.state.data.player1Name} {this.state.data.player1Score} -{' '}
-          {this.state.data.player2Score} {this.state.data.player2Name}
+          {this.state.data.player1} {this.state.data.game1.player1Score} -{' '}
+          {this.state.data.game1.player2Score} {this.state.data.player2}
         </Typography>
       );
     }

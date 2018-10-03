@@ -65,7 +65,7 @@ class MatchDetailReferee extends React.Component<
       return (
         <React.Fragment>
           <Typography>
-            {this.state.data.player1Name}: {this.state.data.player1Score}
+            {this.state.data.player1}: {this.state.data.game1.player1Score}
             <Button onClick={this.increment.bind(this, 'player1Score')}>
               <AddIcon />
             </Button>
@@ -74,7 +74,7 @@ class MatchDetailReferee extends React.Component<
             </Button>
           </Typography>
           <Typography>
-            {this.state.data.player2Name}: {this.state.data.player2Score}
+            {this.state.data.player2}: {this.state.data.game1.player2Score}
             <Button onClick={this.increment.bind(this, 'player2Score')}>
               <AddIcon />
             </Button>
@@ -89,29 +89,15 @@ class MatchDetailReferee extends React.Component<
 
   private increment(property: string) {
     if (this.state.data != null) {
-      this.state.data[property] = this.state.data[property] + 1;
-
-      this.setState(
-        {
-          ...this.state,
-          data: this.state.data
-        },
-        this.update
-      );
+      this.state.data.game1[property] = this.state.data.game1[property] + 1;
+      this.update();
     }
   }
 
   private decrement(property: string) {
-    if (this.state.data != null && this.state.data[property] > 0) {
-      this.state.data[property] = this.state.data[property] - 1;
-
-      this.setState(
-        {
-          ...this.state,
-          data: this.state.data
-        },
-        this.update
-      );
+    if (this.state.data != null) {
+      this.state.data.game1[property] = this.state.data.game1[property] - 1;
+      this.update();
     }
   }
 

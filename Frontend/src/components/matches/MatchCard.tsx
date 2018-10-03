@@ -69,18 +69,18 @@ class MatchCard extends React.Component<IProps, IState> {
               <TableBody>
                 <TableRow key="player1">
                   <TableCell component="th" scope="row" padding="none">
-                    {this.props.data.player1Name}
+                    {this.props.data.player1}
                   </TableCell>
                   <TableCell numeric={true} padding="none">
-                    {this.props.data.player1Score}
+                    {this.props.data.game1.player1Score}
                   </TableCell>
                 </TableRow>
                 <TableRow key="player2">
                   <TableCell component="th" scope="row" padding="none">
-                    {this.props.data.player2Name}
+                    {this.props.data.player2}
                   </TableCell>
                   <TableCell numeric={true} padding="none">
-                    {this.props.data.player2Score}
+                    {this.props.data.game1.player2Score}
                   </TableCell>
                 </TableRow>
               </TableBody>
