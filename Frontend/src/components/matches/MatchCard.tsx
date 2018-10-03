@@ -62,19 +62,13 @@ class MatchCard extends React.Component<IProps, IState> {
 
         <Card>
           <CardContent>
-            <Typography variant="caption">
-              {this.props.data.startTime.toLocaleString()}
-            </Typography>
+            <Typography variant="caption">{this.renderCaption()}</Typography>
             <Table>
               <TableBody>
                 <TableRow key="player1">
                   <TableCell component="th" scope="row" padding="none">
                     <Typography
-                      variant={
-                        this.isMatchWinner(this.props.data, 1)
-                          ? 'body2'
-                          : 'body1'
-                      }
+                      variant={this.isMatchWinner(1) ? 'body2' : 'body1'}
                     >
                       {this.props.data.player1}
                     </Typography>
@@ -88,11 +82,7 @@ class MatchCard extends React.Component<IProps, IState> {
                 <TableRow key="player2">
                   <TableCell component="th" scope="row" padding="none">
                     <Typography
-                      variant={
-                        this.isMatchWinner(this.props.data, 2)
-                          ? 'body2'
-                          : 'body1'
-                      }
+                      variant={this.isMatchWinner(2) ? 'body2' : 'body1'}
                     >
                       {this.props.data.player2}
                     </Typography>
@@ -155,6 +145,16 @@ class MatchCard extends React.Component<IProps, IState> {
     );
   }
 
+  private renderCaption() {
+    if (this.isRunning()) {
+      return 'Currently running';
+    } else if (this.isFinished()) {
+      return 'Final result';
+    } else {
+      return this.props.data.startTime.toLocaleString();
+    }
+  }
+
   private renderGame(
     game: GameDto,
     player: number,
@@ -173,7 +173,19 @@ class MatchCard extends React.Component<IProps, IState> {
     );
   }
 
-  private isGameWinner(game: GameDto, player: number) {
+  private isRunning(): boolean {
+    return (
+      (this.props.data.game1.player1Score > 0 ||
+        this.props.data.game1.player2Score > 0) &&
+      !this.isFinished()
+    );
+  }
+
+  private isFinished(): boolean {
+    return this.isMatchWinner(1) || this.isMatchWinner(2);
+  }
+
+  private isGameWinner(game: GameDto, player: number): boolean {
     const actualScore = game['player' + player + 'Score'];
     const otherScore = game['player' + (player === 1 ? 2 : 1) + 'Score'];
 
@@ -184,11 +196,11 @@ class MatchCard extends React.Component<IProps, IState> {
     );
   }
 
-  private isMatchWinner(match: MatchDto, player: number) {
+  private isMatchWinner(player: number): boolean {
     let winningGames = 0;
 
     for (let i = 1; i <= 5; i++) {
-      if (this.isGameWinner(match['game' + i], player)) {
+      if (this.isGameWinner(this.props.data['game' + i], player)) {
         winningGames++;
       }
     }
