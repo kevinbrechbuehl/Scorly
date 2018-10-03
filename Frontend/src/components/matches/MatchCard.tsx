@@ -18,7 +18,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import WhistleIcon from 'mdi-material-ui/Whistle';
 
 import { GameDto, MatchDto, MatchesClient } from '../../api/client';
@@ -98,11 +97,6 @@ class MatchCard extends React.Component<IProps, IState> {
           </CardContent>
           <CardActions>
             <Link to={'/matches/' + this.props.data.id}>
-              <IconButton>
-                <VisibilityIcon />
-              </IconButton>
-            </Link>
-            <Link to={'/matches/' + this.props.data.id + '/referee'}>
               <IconButton>
                 <WhistleIcon />
               </IconButton>

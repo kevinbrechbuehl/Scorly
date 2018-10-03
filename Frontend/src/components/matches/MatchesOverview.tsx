@@ -25,7 +25,10 @@ interface IState {
   loading: boolean;
 }
 
-class MatchList extends React.Component<WithStyles<typeof styles>, IState> {
+class MatchesOverview extends React.Component<
+  WithStyles<typeof styles>,
+  IState
+> {
   private client = new MatchesClient();
   private hubConnection: HubConnection | null;
 
@@ -111,4 +114,4 @@ class MatchList extends React.Component<WithStyles<typeof styles>, IState> {
   }
 }
 
-export default withStyles(styles)(MatchList);
+export default withStyles(styles)(MatchesOverview);
