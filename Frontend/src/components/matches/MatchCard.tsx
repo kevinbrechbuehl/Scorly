@@ -21,7 +21,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import WhistleIcon from 'mdi-material-ui/Whistle';
 
-import { MatchDto, MatchesClient } from '../../api/client';
+import { GameDto, MatchDto, MatchesClient } from '../../api/client';
 import Error from '../Error';
 import Loading from '../Loading';
 
@@ -69,19 +69,39 @@ class MatchCard extends React.Component<IProps, IState> {
               <TableBody>
                 <TableRow key="player1">
                   <TableCell component="th" scope="row" padding="none">
-                    {this.props.data.player1}
+                    <Typography
+                      variant={
+                        this.isMatchWinner(this.props.data, 1)
+                          ? 'body2'
+                          : 'body1'
+                      }
+                    >
+                      {this.props.data.player1}
+                    </Typography>
                   </TableCell>
-                  <TableCell numeric={true} padding="none">
-                    {this.props.data.game1.player1Score}
-                  </TableCell>
+                  {this.renderGame(this.props.data.game1, 1, true)}
+                  {this.renderGame(this.props.data.game2, 1)}
+                  {this.renderGame(this.props.data.game3, 1)}
+                  {this.renderGame(this.props.data.game4, 1)}
+                  {this.renderGame(this.props.data.game5, 1)}
                 </TableRow>
                 <TableRow key="player2">
                   <TableCell component="th" scope="row" padding="none">
-                    {this.props.data.player2}
+                    <Typography
+                      variant={
+                        this.isMatchWinner(this.props.data, 2)
+                          ? 'body2'
+                          : 'body1'
+                      }
+                    >
+                      {this.props.data.player2}
+                    </Typography>
                   </TableCell>
-                  <TableCell numeric={true} padding="none">
-                    {this.props.data.game1.player2Score}
-                  </TableCell>
+                  {this.renderGame(this.props.data.game1, 2, true)}
+                  {this.renderGame(this.props.data.game2, 2)}
+                  {this.renderGame(this.props.data.game3, 2)}
+                  {this.renderGame(this.props.data.game4, 2)}
+                  {this.renderGame(this.props.data.game5, 2)}
                 </TableRow>
               </TableBody>
             </Table>
@@ -133,6 +153,47 @@ class MatchCard extends React.Component<IProps, IState> {
         </Dialog>
       </React.Fragment>
     );
+  }
+
+  private renderGame(
+    game: GameDto,
+    player: number,
+    alwaysShow: boolean = false
+  ) {
+    return (
+      (alwaysShow || game.player1Score > 0 || game.player2Score > 0) && (
+        <TableCell numeric={true} padding="none">
+          <Typography
+            variant={this.isGameWinner(game, player) ? 'body2' : 'body1'}
+          >
+            {game['player' + player + 'Score']}
+          </Typography>
+        </TableCell>
+      )
+    );
+  }
+
+  private isGameWinner(game: GameDto, player: number) {
+    const actualScore = game['player' + player + 'Score'];
+    const otherScore = game['player' + (player === 1 ? 2 : 1) + 'Score'];
+
+    return (
+      actualScore > otherScore &&
+      actualScore >= 11 &&
+      actualScore - otherScore >= 2
+    );
+  }
+
+  private isMatchWinner(match: MatchDto, player: number) {
+    let winningGames = 0;
+
+    for (let i = 1; i <= 5; i++) {
+      if (this.isGameWinner(match['game' + i], player)) {
+        winningGames++;
+      }
+    }
+
+    return winningGames >= 3;
   }
 
   private openDialog = () => {
