@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+
 import { Theme } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
@@ -25,6 +27,7 @@ interface IState {
 
 class MatchList extends React.Component<WithStyles<typeof styles>, IState> {
   private client = new MatchesClient();
+  private hubConnection: HubConnection | null;
 
   constructor(props: any) {
     super(props);
@@ -40,6 +43,27 @@ class MatchList extends React.Component<WithStyles<typeof styles>, IState> {
 
   public componentDidMount() {
     this.reloadData();
+
+    this.hubConnection = new HubConnectionBuilder()
+      .withUrl(process.env.REACT_APP_API_URL + '/scoreChange')
+      .build();
+
+    this.hubConnection.on('updateScore', match => {
+      const data = this.state.data;
+      const index = data.map(e => e.id).indexOf(match.id);
+      if (index >= 0) {
+        data[index] = match;
+        this.setState({ data });
+      }
+    });
+
+    this.hubConnection.start();
+  }
+
+  public componentWillUnmount() {
+    if (this.hubConnection != null) {
+      this.hubConnection.stop();
+    }
   }
 
   public render() {
