@@ -164,7 +164,7 @@ class MatchCard extends React.Component<IProps, IState> {
   private renderCaption() {
     if (MatchExtensions.isRunning(this.props.data)) {
       return 'Currently running';
-    } else if (MatchExtensions.isFinished(this.props.data)) {
+    } else if (MatchExtensions.isMatchFinished(this.props.data)) {
       return 'Final result';
     } else {
       return moment(this.props.data.startTime).format('DD.MM.YYYY HH:mm');
@@ -178,7 +178,7 @@ class MatchCard extends React.Component<IProps, IState> {
   ) {
     return (
       (alwaysShow || game.player1Score > 0 || game.player2Score > 0) && (
-        <TableCell numeric={true} padding="none">
+        <TableCell numeric={true} padding="checkbox">
           <Typography
             variant={
               MatchExtensions.isGameWinner(game, player) ? 'body2' : 'body1'

@@ -4,11 +4,18 @@ export class MatchExtensions {
   public static isRunning(match: MatchDto): boolean {
     return (
       (match.game1.player1Score > 0 || match.game1.player2Score > 0) &&
-      !MatchExtensions.isFinished(match)
+      !MatchExtensions.isMatchFinished(match)
     );
   }
 
-  public static isFinished(match: MatchDto): boolean {
+  public static isGameFinished(game: GameDto): boolean {
+    return (
+      MatchExtensions.isGameWinner(game, 1) ||
+      MatchExtensions.isGameWinner(game, 2)
+    );
+  }
+
+  public static isMatchFinished(match: MatchDto): boolean {
     return (
       MatchExtensions.isMatchWinner(match, 1) ||
       MatchExtensions.isMatchWinner(match, 2)
@@ -35,6 +42,6 @@ export class MatchExtensions {
       }
     }
 
-    return winningGames >= 3;
+    return winningGames === 3;
   }
 }
