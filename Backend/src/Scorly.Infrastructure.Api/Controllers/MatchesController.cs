@@ -53,12 +53,12 @@ namespace Scorly.Infrastructure.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(MatchDto))]
         public IActionResult Create([FromBody]MatchDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Player1Name) || string.IsNullOrWhiteSpace(dto.Player2Name))
+            if (string.IsNullOrWhiteSpace(dto.Player1) || string.IsNullOrWhiteSpace(dto.Player2))
             {
                 return this.BadRequest();
             }
             
-            var match = AddMatch(dto.Player1Name, dto.Player2Name, dto.StartTime);
+            var match = AddMatch(dto.Player1, dto.Player2, dto.StartTime);
             return this.Ok(match);
         }
 
@@ -100,13 +100,13 @@ namespace Scorly.Infrastructure.Api.Controllers
             return this.NoContent();
         }
 
-        private static MatchDto AddMatch(string player1Name, string player2Name, DateTime startTime)
+        private static MatchDto AddMatch(string player1, string player2, DateTime startTime)
         {
             var match = new MatchDto
             {
                 Id = Guid.NewGuid(),
-                Player1Name = player1Name,
-                Player2Name = player2Name, 
+                Player1 = player1,
+                Player2 = player2,
                 StartTime = startTime
             };
 

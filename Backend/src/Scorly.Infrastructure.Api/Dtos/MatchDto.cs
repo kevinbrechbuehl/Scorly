@@ -4,14 +4,20 @@ namespace Scorly.Infrastructure.Api.Dtos
 {
     public class MatchDto : EntityBaseDto
     {
-        public string Player1Name { get; set; }
-
-        public int Player1Score { get; set;}
-
-        public string Player2Name { get; set; }
-
-        public int Player2Score { get; set; }
-
         public DateTime StartTime { get; set; }
+        
+        public string Player1 { get; set; }
+
+        public string Player2 { get; set; }
+
+        public GameDto Game1 { get; set; } = new GameDto();
+
+        public GameDto Game2 { get; set; } = new GameDto();
+
+        public GameDto Game3 { get; set; } = new GameDto();
+
+        public GameDto Game4 { get; set; } = new GameDto();
+
+        public GameDto Game5 { get; set; } = new GameDto();
     }
 }

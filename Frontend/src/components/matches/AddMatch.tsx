@@ -8,6 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import AddIcon from '@material-ui/icons/Add';
 
@@ -33,8 +34,8 @@ interface IState {
   error: boolean;
   loading: boolean;
 
-  player1Name: string;
-  player2Name: string;
+  player1: string;
+  player2: string;
   startTime: string;
 }
 
@@ -48,8 +49,8 @@ class AddMatch extends React.Component<IProps, IState> {
       dialogOpen: false,
       error: false,
       loading: false,
-      player1Name: '',
-      player2Name: '',
+      player1: '',
+      player2: '',
       startTime: new Date().toISOString().substring(0, 16)
     };
   }
@@ -59,14 +60,16 @@ class AddMatch extends React.Component<IProps, IState> {
       <React.Fragment>
         {this.state.error && <Error message="Error while adding match." />}
 
-        <Button
-          variant="fab"
-          color="primary"
-          className={this.props.classes.add}
-          onClick={this.openDialog}
-        >
-          <AddIcon />
-        </Button>
+        <Tooltip title="Add Match">
+          <Button
+            variant="fab"
+            color="primary"
+            className={this.props.classes.add}
+            onClick={this.openDialog}
+          >
+            <AddIcon />
+          </Button>
+        </Tooltip>
 
         <Dialog
           open={this.state.dialogOpen}
@@ -78,11 +81,11 @@ class AddMatch extends React.Component<IProps, IState> {
             <TextField
               autoFocus={true}
               margin="dense"
-              name="player1Name"
+              name="player1"
               label="Player 1"
               required={true}
               fullWidth={true}
-              value={this.state.player1Name}
+              value={this.state.player1}
               onChange={this.handleChange}
               InputLabelProps={{
                 shrink: true
@@ -90,11 +93,11 @@ class AddMatch extends React.Component<IProps, IState> {
             />
             <TextField
               margin="dense"
-              name="player2Name"
+              name="player2"
               label="Player 2"
               required={true}
               fullWidth={true}
-              value={this.state.player2Name}
+              value={this.state.player2}
               onChange={this.handleChange}
               InputLabelProps={{
                 shrink: true
@@ -147,8 +150,8 @@ class AddMatch extends React.Component<IProps, IState> {
     this.setState({ loading: true, error: false });
 
     const dto = new MatchDto();
-    dto.player1Name = this.state.player1Name;
-    dto.player2Name = this.state.player2Name;
+    dto.player1 = this.state.player1;
+    dto.player2 = this.state.player2;
     dto.startTime = new Date(this.state.startTime);
 
     this.client
@@ -157,8 +160,8 @@ class AddMatch extends React.Component<IProps, IState> {
         this.setState(
           {
             loading: false,
-            player1Name: '',
-            player2Name: ''
+            player1: '',
+            player2: ''
           },
           () => {
             this.closeDialog();

@@ -249,24 +249,37 @@ export interface IEntityBaseDto {
 }
 
 export class MatchDto extends EntityBaseDto implements IMatchDto {
-    player1Name!: string;
-    player1Score!: number;
-    player2Name!: string;
-    player2Score!: number;
     startTime!: Date;
+    player1!: string;
+    player2!: string;
+    game1!: GameDto;
+    game2!: GameDto;
+    game3!: GameDto;
+    game4!: GameDto;
+    game5!: GameDto;
 
     constructor(data?: IMatchDto) {
         super(data);
+        if (!data) {
+            this.game1 = new GameDto();
+            this.game2 = new GameDto();
+            this.game3 = new GameDto();
+            this.game4 = new GameDto();
+            this.game5 = new GameDto();
+        }
     }
 
     init(data?: any) {
         super.init(data);
         if (data) {
-            this.player1Name = data["player1Name"];
-            this.player1Score = data["player1Score"];
-            this.player2Name = data["player2Name"];
-            this.player2Score = data["player2Score"];
             this.startTime = data["startTime"] ? new Date(data["startTime"].toString()) : <any>undefined;
+            this.player1 = data["player1"];
+            this.player2 = data["player2"];
+            this.game1 = data["game1"] ? GameDto.fromJS(data["game1"]) : new GameDto();
+            this.game2 = data["game2"] ? GameDto.fromJS(data["game2"]) : new GameDto();
+            this.game3 = data["game3"] ? GameDto.fromJS(data["game3"]) : new GameDto();
+            this.game4 = data["game4"] ? GameDto.fromJS(data["game4"]) : new GameDto();
+            this.game5 = data["game5"] ? GameDto.fromJS(data["game5"]) : new GameDto();
         }
     }
 
@@ -279,22 +292,65 @@ export class MatchDto extends EntityBaseDto implements IMatchDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["player1Name"] = this.player1Name;
-        data["player1Score"] = this.player1Score;
-        data["player2Name"] = this.player2Name;
-        data["player2Score"] = this.player2Score;
         data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["player1"] = this.player1;
+        data["player2"] = this.player2;
+        data["game1"] = this.game1 ? this.game1.toJSON() : <any>undefined;
+        data["game2"] = this.game2 ? this.game2.toJSON() : <any>undefined;
+        data["game3"] = this.game3 ? this.game3.toJSON() : <any>undefined;
+        data["game4"] = this.game4 ? this.game4.toJSON() : <any>undefined;
+        data["game5"] = this.game5 ? this.game5.toJSON() : <any>undefined;
         super.toJSON(data);
         return data; 
     }
 }
 
 export interface IMatchDto extends IEntityBaseDto {
-    player1Name: string;
-    player1Score: number;
-    player2Name: string;
-    player2Score: number;
     startTime: Date;
+    player1: string;
+    player2: string;
+    game1: GameDto;
+    game2: GameDto;
+    game3: GameDto;
+    game4: GameDto;
+    game5: GameDto;
+}
+
+export class GameDto extends EntityBaseDto implements IGameDto {
+    player1Score!: number;
+    player2Score!: number;
+
+    constructor(data?: IGameDto) {
+        super(data);
+    }
+
+    init(data?: any) {
+        super.init(data);
+        if (data) {
+            this.player1Score = data["player1Score"];
+            this.player2Score = data["player2Score"];
+        }
+    }
+
+    static fromJS(data: any): GameDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GameDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["player1Score"] = this.player1Score;
+        data["player2Score"] = this.player2Score;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IGameDto extends IEntityBaseDto {
+    player1Score: number;
+    player2Score: number;
 }
 
 export class SwaggerException extends Error {
