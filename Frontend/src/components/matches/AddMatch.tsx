@@ -8,6 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles, WithStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import AddIcon from '@material-ui/icons/Add';
 
@@ -59,14 +60,16 @@ class AddMatch extends React.Component<IProps, IState> {
       <React.Fragment>
         {this.state.error && <Error message="Error while adding match." />}
 
-        <Button
-          variant="fab"
-          color="primary"
-          className={this.props.classes.add}
-          onClick={this.openDialog}
-        >
-          <AddIcon />
-        </Button>
+        <Tooltip title="Add Match">
+          <Button
+            variant="fab"
+            color="primary"
+            className={this.props.classes.add}
+            onClick={this.openDialog}
+          >
+            <AddIcon />
+          </Button>
+        </Tooltip>
 
         <Dialog
           open={this.state.dialogOpen}

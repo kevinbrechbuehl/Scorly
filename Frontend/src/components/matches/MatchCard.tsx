@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import * as moment from 'moment';
+
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -16,11 +18,14 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
+
 import DeleteIcon from '@material-ui/icons/Delete';
 import WhistleIcon from 'mdi-material-ui/Whistle';
 
 import { GameDto, MatchDto, MatchesClient } from '../../api/client';
+import { MatchExtensions } from '../../helpers/match.extensions';
 import Error from '../Error';
 import Loading from '../Loading';
 
@@ -33,6 +38,7 @@ const styles = {
 interface IProps extends WithStyles<typeof styles> {
   data: MatchDto;
   onDeletedHandler: () => void;
+  viewMode: boolean;
 }
 
 interface IState {
@@ -61,13 +67,19 @@ class MatchCard extends React.Component<IProps, IState> {
 
         <Card>
           <CardContent>
-            <Typography variant="caption">{this.renderCaption()}</Typography>
+            {!this.props.viewMode && (
+              <Typography variant="caption">{this.renderCaption()}</Typography>
+            )}
             <Table>
               <TableBody>
                 <TableRow key="player1">
                   <TableCell component="th" scope="row" padding="none">
                     <Typography
-                      variant={this.isMatchWinner(1) ? 'body2' : 'body1'}
+                      variant={
+                        MatchExtensions.isMatchWinner(this.props.data, 1)
+                          ? 'body2'
+                          : 'body1'
+                      }
                     >
                       {this.props.data.player1}
                     </Typography>
@@ -81,7 +93,11 @@ class MatchCard extends React.Component<IProps, IState> {
                 <TableRow key="player2">
                   <TableCell component="th" scope="row" padding="none">
                     <Typography
-                      variant={this.isMatchWinner(2) ? 'body2' : 'body1'}
+                      variant={
+                        MatchExtensions.isMatchWinner(this.props.data, 2)
+                          ? 'body2'
+                          : 'body1'
+                      }
                     >
                       {this.props.data.player2}
                     </Typography>
@@ -95,19 +111,25 @@ class MatchCard extends React.Component<IProps, IState> {
               </TableBody>
             </Table>
           </CardContent>
-          <CardActions>
-            <Link to={'/matches/' + this.props.data.id}>
-              <IconButton>
-                <WhistleIcon />
-              </IconButton>
-            </Link>
-            <IconButton
-              onClick={this.openDialog}
-              className={this.props.classes.delete}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </CardActions>
+          {!this.props.viewMode && (
+            <CardActions>
+              <Tooltip title="Referee Match">
+                <Link to={'/matches/' + this.props.data.id}>
+                  <IconButton>
+                    <WhistleIcon />
+                  </IconButton>
+                </Link>
+              </Tooltip>
+              <Tooltip title="Delete Match">
+                <IconButton
+                  onClick={this.openDialog}
+                  className={this.props.classes.delete}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            </CardActions>
+          )}
         </Card>
 
         <Dialog
@@ -140,12 +162,12 @@ class MatchCard extends React.Component<IProps, IState> {
   }
 
   private renderCaption() {
-    if (this.isRunning()) {
+    if (MatchExtensions.isRunning(this.props.data)) {
       return 'Currently running';
-    } else if (this.isFinished()) {
+    } else if (MatchExtensions.isFinished(this.props.data)) {
       return 'Final result';
     } else {
-      return this.props.data.startTime.toLocaleString();
+      return moment(this.props.data.startTime).format('DD.MM.YYYY HH:mm');
     }
   }
 
@@ -158,48 +180,15 @@ class MatchCard extends React.Component<IProps, IState> {
       (alwaysShow || game.player1Score > 0 || game.player2Score > 0) && (
         <TableCell numeric={true} padding="none">
           <Typography
-            variant={this.isGameWinner(game, player) ? 'body2' : 'body1'}
+            variant={
+              MatchExtensions.isGameWinner(game, player) ? 'body2' : 'body1'
+            }
           >
             {game['player' + player + 'Score']}
           </Typography>
         </TableCell>
       )
     );
-  }
-
-  private isRunning(): boolean {
-    return (
-      (this.props.data.game1.player1Score > 0 ||
-        this.props.data.game1.player2Score > 0) &&
-      !this.isFinished()
-    );
-  }
-
-  private isFinished(): boolean {
-    return this.isMatchWinner(1) || this.isMatchWinner(2);
-  }
-
-  private isGameWinner(game: GameDto, player: number): boolean {
-    const actualScore = game['player' + player + 'Score'];
-    const otherScore = game['player' + (player === 1 ? 2 : 1) + 'Score'];
-
-    return (
-      actualScore > otherScore &&
-      actualScore >= 11 &&
-      actualScore - otherScore >= 2
-    );
-  }
-
-  private isMatchWinner(player: number): boolean {
-    let winningGames = 0;
-
-    for (let i = 1; i <= 5; i++) {
-      if (this.isGameWinner(this.props.data['game' + i], player)) {
-        winningGames++;
-      }
-    }
-
-    return winningGames >= 3;
   }
 
   private openDialog = () => {
