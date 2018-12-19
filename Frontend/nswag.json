@@ -5,10 +5,10 @@
       "defaultReferenceTypeNullHandling": "notNull",
       "defaultPropertyNameHandling": "camelCase",
       "assemblyPaths": [
-        "../Backend/src/Scorly.Infrastructure.Api/bin/Debug/netcoreapp2.1/Scorly.Infrastructure.Api.dll"
+        "../Backend/src/Scorly.Infrastructure.Api/bin/Debug/netcoreapp2.2/Scorly.Infrastructure.Api.dll"
       ],
       "referencePaths": [
-        "../Backend/src/Scorly.Startup/bin/Debug/netcoreapp2.1/publish"
+        "../Backend/src/Scorly.Startup/bin/Debug/netcoreapp2.2/publish"
       ],
       "controllerNames": [
         "Scorly.Infrastructure.Api.Controllers.MatchesController"
