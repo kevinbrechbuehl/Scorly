@@ -20,7 +20,7 @@ let outputDir = __SOURCE_DIRECTORY__ + "/Output"
 let tempDir = __SOURCE_DIRECTORY__ + "/Temp"
 
 let backendDir = __SOURCE_DIRECTORY__ + "/../Backend"
-let backendBuildDir = backendDir + "/src/Scorly.Startup/bin/Release/netcoreapp2.1/publish"
+let backendBuildDir = backendDir + "/src/Scorly.Startup/bin/Release/netcoreapp2.2/publish"
 let backendTempDir = tempDir + "/Backend"
 let backendTestResultsFile = tempDir + "/test_results.trx"
 

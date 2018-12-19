@@ -23,7 +23,7 @@ namespace Scorly.Infrastructure.Api
 
             // todo: correctly configure CORS
             app.UseCors(builder => builder
-                .AllowAnyOrigin()
+                .WithOrigins("http://localhost:3000", "https://scorly-web.azurewebsites.net")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
