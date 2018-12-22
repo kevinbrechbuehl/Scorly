@@ -22,12 +22,16 @@ let tempDir = __SOURCE_DIRECTORY__ + "/Temp"
 let backendDir = __SOURCE_DIRECTORY__ + "/../Backend"
 let backendBuildDir = backendDir + "/src/Scorly.Startup/bin/Release/netcoreapp2.2/publish"
 let backendTempDir = tempDir + "/Backend"
+let backendStartupProject = backendDir + "/src/Scorly.Startup/Scorly.Startup.csproj"
+let backendSolutionFile = backendDir + "/Scorly.sln"
 let backendTestResultsFile = tempDir + "/test_results.trx"
+let backendOutputFile = outputDir + "/Scorly.Backend.zip"
 
 let frontendDir = __SOURCE_DIRECTORY__ + "/../Frontend"
 let frontendBuildDir = frontendDir + "/build"
 let frontendTempDir = tempDir + "/Frontend"
 let frontendTestResultsFile = frontendDir + "/junit.xml"
+let frontendOutputFile = outputDir + "/Scorly.Frontend.zip"
 
 // Targets
 Target.create "Clean" (fun _ ->
@@ -36,8 +40,8 @@ Target.create "Clean" (fun _ ->
 
 Target.create "Build" (fun _ ->
   // Build Backend
-  DotNet.build id (backendDir + "/Scorly.sln")
-  DotNet.publish id (backendDir + "/src/Scorly.StartUp/Scorly.StartUp.csproj")
+  DotNet.build id (backendSolutionFile)
+  DotNet.publish id (backendStartupProject)
   Shell.copyDir backendTempDir backendBuildDir (fun _ -> true)
 
   // Build Frontend
@@ -49,8 +53,7 @@ Target.create "Build" (fun _ ->
 Target.create "Test" (fun _ ->
   // Test Backend
   try
-    // TODO: FInd a way to test all projects under /test/**
-    DotNet.test (fun o -> { o with Logger = Some ("trx;LogFileName=" + backendTestResultsFile) }) (backendDir + "/test/Scorly.Core.Tests/Scorly.Core.Tests.csproj")
+    DotNet.test (fun o -> { o with Logger = Some ("trx;LogFileName=" + backendTestResultsFile) }) (backendSolutionFile)
   finally
     if BuildServer.buildServer = BuildServer.AppVeyor then
       AppVeyor.defaultTraceListener.Write (TraceData.ImportData (ImportData.Mstest, backendTestResultsFile))
@@ -68,11 +71,11 @@ Target.create "Pack" (fun _ ->
   
   // Pack Backend
   !! (backendTempDir + "/**/*.*")
-    |> Zip.zip backendTempDir (outputDir + "/Scorly.Backend.zip")
+    |> Zip.zip backendTempDir (backendOutputFile)
   
   // Pack Frontend
   !! (frontendTempDir + "/**/*.*")
-    |> Zip.zip frontendTempDir (outputDir + "/Scorly.Frontend.zip")
+    |> Zip.zip frontendTempDir (frontendOutputFile)
 )
 
 Target.create "Build-Test-Pack" ignore
